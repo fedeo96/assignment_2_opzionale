@@ -14,7 +14,7 @@ def canny(img, low_threshold, high_threshold):
 
 def gaussian_blur(img, kernel_size):
     """Applies a Gaussian Noise kernel"""
-    return cv2.GaussianBlur(img, (kernel_size,kernel_size) , 0)
+    return cv2.GaussianBlur(img, (kernel_size,kernel_size) , 3)
 
 def region_of_interest(img, vertices):
     """
@@ -40,7 +40,7 @@ def region_of_interest(img, vertices):
     masked_image = cv2.bitwise_and(img, mask)
     return masked_image
 
-def drawLine(img, x, y, color=[0, 0, 255], thickness=5):
+def drawLine(img, x, y, color=[255, 0, 255], thickness=10):
     """
     Point interpolation
     Adjust a line to the points [`x`, `y`] and draws it on the image `img` using `color` and `thickness` for the line.
@@ -57,11 +57,11 @@ def drawLine(img, x, y, color=[0, 0, 255], thickness=5):
     maxX = img.shape[1]
     y1 = maxY
     x1 = int((y1 - b)/m)
-    y2 = int((maxY/2)) + 60
+    y2 = int((maxY/2)) + 70
     x2 = int((y2 - b)/m)
     cv2.line(img, (x1, y1), (x2, y2), color, thickness)
 
-def draw_lines(img, lines, color=[0, 0, 255], thickness=5):
+def draw_lines(img, lines, color=[255, 0, 255], thickness=10):
     """
     NOTE: this is the function you might want to use as a starting point once you want to 
     average/extrapolate the line segments you detect to map out the full
@@ -120,7 +120,6 @@ def hough_lines(img, rho, theta, threshold, min_line_len, max_line_gap):
     return line_img
  
 
-    
 def process_image_pipeline(image):
 
     #1 grayscale the image
@@ -142,9 +141,9 @@ def process_image_pipeline(image):
     # Make a blank the same size as our image to draw on
     rho = 1 # distance resolution in pixels of the Hough grid
     theta = np.pi/180 # angular resolution in radians of the Hough grid
-    threshold = 35
-    min_line_length = 25 #minimum number of pixels making up a line
-    max_line_gap = 75 # maximum gap in pixels between connectable line segments
+    threshold = 30
+    min_line_length = 120 #minimum number of pixels making up a line
+    max_line_gap = 200 # maximum gap in pixels between connectable line segments
     line_image = np.copy(image) # creating a blank to draw lines on
     
     #6 Run Hough on edge detected image
@@ -153,8 +152,8 @@ def process_image_pipeline(image):
     lines = hough_lines(masked_edges, rho, theta, threshold, min_line_length, max_line_gap)
     
     # Create a "color" binary image to combine with line image
-    color_edges = np.dstack((edges, edges, edges)) 
+    color_edges = np.dstack((0, 0, 255))
 
     # Draw the lines on the edge image (this function
-    image_wlines = cv2.addWeighted(lines, 0.8, line_image, 1, 0) 
+    image_wlines = cv2.addWeighted(lines, 0.8, line_image, 1, 0)
     return image_wlines

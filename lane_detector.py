@@ -21,7 +21,7 @@ def process_videos():
 
     for video_name in os.listdir(input_dir):
         cap = cv2.VideoCapture(input_dir+"/"+video_name)
-        out = cv2.VideoWriter(output_dir+video_name,0x7634706d, 20.0, (960,540))
+        out = cv2.VideoWriter(output_dir+video_name, 0x7634706d, 20.0, (960,540))
         while(cap.isOpened()):
             ret, frame = cap.read()
             if ret==True:

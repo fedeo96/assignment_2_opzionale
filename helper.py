@@ -14,7 +14,7 @@ def canny(img, low_threshold, high_threshold):
 
 def gaussian_blur(img, kernel_size):
     """Applies a Gaussian Noise kernel"""
-    return cv2.GaussianBlur(img, (kernel_size,kernel_size) , 3)
+    return cv2.GaussianBlur(img, (kernel_size, kernel_size), 3)
 
 def region_of_interest(img, vertices):
     """
@@ -118,35 +118,34 @@ def hough_lines(img, rho, theta, threshold, min_line_len, max_line_gap):
  
     draw_lines(line_img, lines)
     return line_img
- 
 
 def process_image_pipeline(image):
 
-    #1 grayscale the image
+    # 1 grayscale the image
     gray = grayscale(image)
 
-    #2 Apply Gaussian smoothing
+    # 2 Apply Gaussian smoothing
     blur_gray = gaussian_blur(gray, kernel_size = 5)
 
-    #3 Apply Canny in order to perform the edge detection
+    # 3 Apply Canny in order to perform the edge detection
     edges = canny(blur_gray, low_threshold = 50, high_threshold = 250)
 
-    #4 This time we are defining a four sided polygon to mask
+    # 4 This time we are defining a four sided polygon to mask
     imshape = image.shape
-    #vertices that defines our region of interest!
-    vertices = np.array([[(0,imshape[0]),(460, 310), (460, 310), (imshape[1],imshape[0])]], dtype=np.int32)
-    masked_edges=region_of_interest(edges, vertices)
+    # vertices that defines our region of interest!
+    vertices = np.array([[(0, imshape[0]), (460, 310), (460, 310), (imshape[1], imshape[0])]], dtype=np.int32)
+    masked_edges = region_of_interest(edges, vertices)
 
-    #5 Define the Hough transform parameters (based on guess and looking which was the output :p)
+    # 5 Define the Hough transform parameters (based on guess and looking which was the output :p)
     # Make a blank the same size as our image to draw on
-    rho = 1 # distance resolution in pixels of the Hough grid
-    theta = np.pi/180 # angular resolution in radians of the Hough grid
-    threshold = 30
-    min_line_length = 120 #minimum number of pixels making up a line
-    max_line_gap = 200 # maximum gap in pixels between connectable line segments
-    line_image = np.copy(image) # creating a blank to draw lines on
+    rho = 1  # distance resolution in pixels of the Hough grid
+    theta = np.pi/180  # angular resolution in radians of the Hough grid
+    threshold = 31
+    min_line_length = 120  # minimum number of pixels making up a line
+    max_line_gap = 200  # maximum gap in pixels between connectable line segments
+    line_image = np.copy(image)  # creating a blank to draw lines on
     
-    #6 Run Hough on edge detected image
+    # 6 Run Hough on edge detected image
     # Output "lines" is an array containing endpoints of detected line segments
     # Define the Hough transform parameters
     lines = hough_lines(masked_edges, rho, theta, threshold, min_line_length, max_line_gap)
